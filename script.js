@@ -1,83 +1,39 @@
-function findCard(){
+async function findCard(){
 
 
-let text = document
-.getElementById("search")
+let q =
+document.getElementById("search")
 .value
 .toLowerCase();
 
 
 
-let result =
-document.getElementById("result");
+let stores =
+await fetch("data/stores.json")
+.then(r=>r.json());
+
+
+let cards =
+await fetch("data/cards.json")
+.then(r=>r.json());
 
 
 
-if(text.includes("пятер")
-|| text.includes("магнит")
-|| text.includes("масло")
-|| text.includes("продукт")){
+let shop =
+stores.find(
+s=>q.includes(
+s.name.toLowerCase()
+)
+);
 
 
-result.innerHTML = `
 
-🛒 Продукты
-
-🏆 Лучшая карта:
-
-💳 Альфа-Банк
-
-Кэшбэк: 3%
-
-`;
-
-}
+let category;
 
 
-else if(
-text.includes("dns")
-||
-text.includes("электро")
-||
-text.includes("телефон")
-){
+if(shop){
 
-
-result.innerHTML = `
-
-💻 Электроника
-
-🏆 Лучшая карта:
-
-💳 Озон Банк
-
-Кэшбэк: 5%
-
-`;
-
-}
-
-
-else if(
-text.includes("бенз")
-||
-text.includes("азс")
-||
-text.includes("лукойл")
-){
-
-
-result.innerHTML = `
-
-⛽ АЗС
-
-🏆 Лучшая карта:
-
-💳 ОТП
-
-Кэшбэк: 5%
-
-`;
+category = shop.category;
 
 }
 
@@ -85,15 +41,89 @@ result.innerHTML = `
 else {
 
 
-result.innerHTML = `
+if(q.includes("масло") ||
+q.includes("еда") ||
+q.includes("хлеб")){
 
-❓ Пока не знаю
+category="продукты";
 
-Добавим этот магазин позже
+}
+
+
+else if(q.includes("бенз")){
+
+category="азс";
+
+}
+
+
+else if(q.includes("телефон") ||
+q.includes("компьют")){
+
+category="электроника";
+
+}
+
+
+else if(q.includes("шампунь")){
+
+category="красота";
+
+}
+
+}
+
+
+
+let best=null;
+
+
+let max=0;
+
+
+
+cards.forEach(card=>{
+
+
+let value =
+card.cashback[category]
+||
+card.cashback["все"];
+
+
+
+if(value>max){
+
+max=value;
+
+best=card.name;
+
+}
+
+
+});
+
+
+
+document.getElementById("result").innerHTML = `
+
+Категория:
+<b>${category || "не найдена"}</b>
+
+<br><br>
+
+🏆 Лучшая карта:
+
+<br>
+
+💳 <b>${best || "нет данных"}</b>
+
+<br>
+
+💰 Кэшбэк: ${max}%
 
 `;
 
-}
 
 
 }

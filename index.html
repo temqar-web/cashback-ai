@@ -28,7 +28,10 @@
     type="text"
     id="search"
     placeholder="Например: Магнит, масло, такси..."
-    oninput="findCard()">
+    oninput="findCard()"if (q.length < 2) {
+    document.getElementById("result").innerHTML = "";
+    return;
+}>
 
         <button onclick="findCard()">
             🔍 Найти лучшую карту

@@ -2,7 +2,8 @@ async function findCard(){
 
 
 let q =
-document.getElementById("search")
+document
+.getElementById("search")
 .value
 .toLowerCase();
 
@@ -19,16 +20,16 @@ await fetch("data/cards.json")
 
 
 
-let shop =
-stores.find(
-s=>q.includes(
-s.name.toLowerCase()
-)
+let category = null;
+
+
+
+// поиск магазина
+
+let shop = stores.find(
+s => q.includes(s.name.toLowerCase())
 );
 
-
-
-let category;
 
 
 if(shop){
@@ -38,65 +39,103 @@ category = shop.category;
 }
 
 
-else {
+// поиск товара
+
+if(!category){
 
 
-if(q.includes("масло") ||
-q.includes("еда") ||
-q.includes("хлеб")){
+if(
+q.includes("масло") ||
+q.includes("молоко") ||
+q.includes("хлеб") ||
+q.includes("сыр") ||
+q.includes("еда")
+){
 
 category="продукты";
 
 }
 
 
-else if(q.includes("бенз")){
-
-category="азс";
-
-}
-
-
-else if(q.includes("телефон") ||
-q.includes("компьют")){
+if(
+q.includes("телефон") ||
+q.includes("ноут") ||
+q.includes("компьют") ||
+q.includes("телевизор")
+){
 
 category="электроника";
 
 }
 
 
-else if(q.includes("шампунь")){
+if(
+q.includes("бенз") ||
+q.includes("заправ")
+){
+
+category="азс";
+
+}
+
+
+if(
+q.includes("шампунь") ||
+q.includes("крем") ||
+q.includes("космет")
+){
 
 category="красота";
 
 }
 
+
+if(
+q.includes("таблет") ||
+q.includes("лекар")
+){
+
+category="аптеки";
+
+}
+
+
+if(
+q.includes("такси")
+){
+
+category="такси";
+
+}
+
+
 }
 
 
 
-let best=null;
+// ищем лучшую карту
 
 
-let max=0;
+let bestCard = "";
+let bestCashback = 0;
 
 
 
 cards.forEach(card=>{
 
 
-let value =
+let cashback =
 card.cashback[category]
 ||
 card.cashback["все"];
 
 
 
-if(value>max){
+if(cashback > bestCashback){
 
-max=value;
+bestCashback = cashback;
 
-best=card.name;
+bestCard = card.name;
 
 }
 
@@ -105,22 +144,40 @@ best=card.name;
 
 
 
+
+
 document.getElementById("result").innerHTML = `
 
-Категория:
+
+<div>
+
+📂 Категория:
+
 <b>${category || "не найдена"}</b>
+
 
 <br><br>
 
+
 🏆 Лучшая карта:
 
-<br>
-
-💳 <b>${best || "нет данных"}</b>
 
 <br>
 
-💰 Кэшбэк: ${max}%
+
+💳 <b>${bestCard}</b>
+
+
+<br>
+
+
+💰 Кэшбэк:
+
+<b>${bestCashback}%</b>
+
+
+</div>
+
 
 `;
 

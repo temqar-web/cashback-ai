@@ -1,15 +1,44 @@
-<div class="container">
+<!DOCTYPE html>
+<html lang="ru">
 
-    <h1>💳 Cashback AI</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <input
-        id="search"
-        placeholder="Введите магазин или товар">
+    <title>Cashback AI</title>
 
-    <button onclick="findCard()">
-        Найти лучшую карту
-    </button>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    <div id="result"></div>
+<body>
 
-</div>
+    <div class="container">
+
+        <div class="logo">
+            💳
+        </div>
+
+        <h1>Cashback AI</h1>
+
+        <p class="subtitle">
+            Найдем карту с самым выгодным кэшбэком
+        </p>
+
+        <input
+            type="text"
+            id="search"
+            placeholder="Например: Магнит, такси, масло">
+
+        <button onclick="findCard()">
+            🔍 Найти лучшую карту
+        </button>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,173 +1,109 @@
-async function findCard(){
+async function findCard() {
 
+    const q = document
+        .getElementById("search")
+        .value
+        .toLowerCase()
+        .trim();
 
-let q =
-document
-.getElementById("search")
-.value
-.toLowerCase();
+    if (!q) {
+        document.getElementById("result").innerHTML = "";
+        return;
+    }
 
+    const stores = await fetch("data/stores.json").then(r => r.json());
+    const cards = await fetch("data/cards.json").then(r => r.json());
+    const products = await fetch("data/products.json").then(r => r.json());
 
+    let category = null;
 
-let stores =
-await fetch("data/stores.json")
-.then(r=>r.json());
+    // Поиск магазина
+    const shop = stores.find(store =>
+        q.includes(store.name.toLowerCase())
+    );
 
+    if (shop) {
+        category = shop.category;
+    }
 
-let cards =
-await fetch("data/cards.json")
-.then(r=>r.json());
+    // Поиск товара
+    if (!category) {
 
+        for (const product of products) {
 
+            const found = product.words.some(word =>
+                q.includes(word.toLowerCase())
+            );
 
-let category = null;
+            if (found) {
+                category = product.category;
+                break;
+            }
 
+        }
 
+    }
 
-// поиск магазина
+    // Если категория не найдена
+    if (!category) {
 
-let shop = stores.find(
-s => q.includes(s.name.toLowerCase())
-);
+        document.getElementById("result").innerHTML = `
+            <div class="card">
+                <h3>🤔 Ничего не найдено</h3>
+                <br>
+                Попробуйте написать название магазина
+                <br>
+                или товара.
+            </div>
+        `;
 
+        return;
 
+    }
 
-if(shop){
+    // Поиск лучшей карты
+    let bestCard = "";
+    let bestCashback = -1;
 
-category = shop.category;
+    cards.forEach(card => {
 
-}
+        const cashback =
+            card.cashback[category] ??
+            card.cashback["все"] ??
+            0;
 
+        if (cashback > bestCashback) {
+            bestCashback = cashback;
+            bestCard = card.name;
+        }
 
-// поиск товара
+    });
 
-if(!category){
+    // Вывод результата
+    document.getElementById("result").innerHTML = `
+        <div class="card">
 
+            <div class="category">
+                📂 ${category}
+            </div>
 
-if(
-q.includes("масло") ||
-q.includes("молоко") ||
-q.includes("хлеб") ||
-q.includes("сыр") ||
-q.includes("еда")
-){
+            <div class="bank">
+                💳 ${bestCard}
+            </div>
 
-category="продукты";
+            <br>
 
-}
+            <div class="cashback">
+                ${bestCashback}%
+            </div>
 
+            <br>
 
-if(
-q.includes("телефон") ||
-q.includes("ноут") ||
-q.includes("компьют") ||
-q.includes("телевизор")
-){
+            <div>
+                ✅ Самая выгодная карта для этой покупки
+            </div>
 
-category="электроника";
-
-}
-
-
-if(
-q.includes("бенз") ||
-q.includes("заправ")
-){
-
-category="азс";
-
-}
-
-
-if(
-q.includes("шампунь") ||
-q.includes("крем") ||
-q.includes("космет")
-){
-
-category="красота";
-
-}
-
-
-if(
-q.includes("таблет") ||
-q.includes("лекар")
-){
-
-category="аптеки";
-
-}
-
-
-if(
-q.includes("такси")
-){
-
-category="такси";
-
-}
-
+        </div>
+    `;
 
 }
-
-
-
-// ищем лучшую карту
-
-
-let bestCard = "";
-let bestCashback = 0;
-
-
-
-cards.forEach(card=>{
-
-
-let cashback =
-card.cashback[category]
-||
-card.cashback["все"];
-
-
-
-if(cashback > bestCashback){
-
-bestCashback = cashback;
-
-bestCard = card.name;
-
-}
-
-
-});
-
-
-
-
-
-document.getElementById("result").innerHTML = `
-<div class="card">
-
-    <div class="category">
-        📂 ${category || "Категория не найдена"}
-    </div>
-
-    <div class="bank">
-        💳 ${bestCard}
-    </div>
-
-    <br>
-
-    <div class="cashback">
-        ${bestCashback}%
-    </div>
-
-    <br>
-
-    <div>
-        Это самая выгодная карта для данной покупки
-    </div>
-
-</div>
-`;

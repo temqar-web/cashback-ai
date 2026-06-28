@@ -147,40 +147,27 @@ bestCard = card.name;
 
 
 document.getElementById("result").innerHTML = `
+<div class="card">
 
+    <div class="category">
+        📂 ${category || "Категория не найдена"}
+    </div>
 
-<div>
+    <div class="bank">
+        💳 ${bestCard}
+    </div>
 
-📂 Категория:
+    <br>
 
-<b>${category || "не найдена"}</b>
+    <div class="cashback">
+        ${bestCashback}%
+    </div>
 
+    <br>
 
-<br><br>
-
-
-🏆 Лучшая карта:
-
-
-<br>
-
-
-💳 <b>${bestCard}</b>
-
-
-<br>
-
-
-💰 Кэшбэк:
-
-<b>${bestCashback}%</b>
-
+    <div>
+        Это самая выгодная карта для данной покупки
+    </div>
 
 </div>
-
-
 `;
-
-
-
-}
